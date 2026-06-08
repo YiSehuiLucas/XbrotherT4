@@ -1,30 +1,34 @@
 package nats
 
 import (
-	"fmt"
+	"encoding/json"
 	"log"
+
+	m "T4/Models"
 
 	"github.com/nats-io/nats.go"
 )
 
-func Publisher(T, H string) {
-	// connect to nats
+
+func Connect() *nats.Conn {
 	nc, err := nats.Connect("nats://localhost:4222")
 	if err != nil {
 		log.Fatalln(err)
 	}
-	defer nc.Close()
+	return nc
+}
 
-	// data := []byte(T)
-	// data = append(data, byte(H))
+func Publisher(d m.Data,nc *nats.Conn) {
+	// Encode
+	msg, err := json.Marshal(d)
+	if err != nil {
+		log.Fatalln(err)
+	}
 
-	err = nc.Publish("chat.tempreature", []byte(T))
+	err = nc.Publish("senior.data", msg)
 	if err != nil {
-		log.Fatalln("tempreature send failed")
+		log.Fatalln("data send failed")
 	}
-	err = nc.Publish("chat.humility", []byte(H))
-	if err != nil {
-		log.Fatalln("humility send failed")
-	}
-	fmt.Println("message send successfully")
+
+	// fmt.Println("send:", d)
 }

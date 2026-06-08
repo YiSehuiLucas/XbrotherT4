@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option go_package = ".;service"; // 当前目录生成 service 包
+
+
+// 定义服务
+// 定义了一个 SayHello 服务
+service GetData {
+    rpc GetData (GetDataRequest) returns (GetDataResponse);
+}
+
+// 定义请求消息体
+// 如果要定义切片则使用 repeated 关键字
+// 不同字段的消息号不能重复
+// 若是同一个切片中的字段则消息号相同
+message GetDataRequest {
+    string request = 1;
+}
+
+// 定义相应消息体
+message GetDataResponse {
+    string Tempreature = 1;
+    string Humility = 2;
+}

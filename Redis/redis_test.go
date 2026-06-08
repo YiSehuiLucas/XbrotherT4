@@ -1,15 +1,20 @@
-package nats
+package redisSelf
 
 import (
 	m "T4/Models"
 	"testing"
 )
 
-func TestPublisher(t *testing.T) {
+func TestSetR(t *testing.T) {
 	testData := m.Data{
 		Tempreature: "12.12",
 		Humility:    "45.23",
 	}
 
-	Publisher(testData)
+	SetR(testData)
+}
+
+
+func TestReadR(t *testing.T) {
+	ReadR()
 }

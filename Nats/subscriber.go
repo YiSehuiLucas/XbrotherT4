@@ -1,6 +1,9 @@
 package nats
 
 import (
+	m "T4/Models"
+	redisSelf "T4/Redis"
+	"encoding/json"
 	"fmt"
 	"log"
 
@@ -9,26 +12,24 @@ import (
 
 // 从publisher接收数据
 // 数据发送给 redis
-func Subscriber() {
-	nc, err := nats.Connect("nats://localhost:4222")
-	if err != nil {
-		log.Fatalln("connect to nats failed", err)
-	}
-	defer nc.Close()
-
-	fmt.Println("start listening")
+func Subscriber(nc *nats.Conn) {
+	// Decode
 	// subscribe message
-	_, err = nc.Subscribe("chat.tempreature", func(msg *nats.Msg) {
-		fmt.Println("receiced message:", string(msg.Data))
-	})
+	var data m.Data
+	_, err := nc.Subscribe("senior.data", func(msg *nats.Msg) {
+		err := json.Unmarshal(msg.Data, &data)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		fmt.Println("received : ", data)
+		// 写入 redis
+		redisSelf.SetR(data)
+		fmt.Println("write into redis")
 
-	_, err = nc.Subscribe("chat.humility", func(msg *nats.Msg) {
-		fmt.Println("receiced message:", string(msg.Data))
 	})
-
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	select {}
+	// select {}
 }
