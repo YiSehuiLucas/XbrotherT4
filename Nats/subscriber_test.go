@@ -1,7 +1,16 @@
 package nats
 
-import "testing"
+import (
+	"log"
+	"testing"
+
+	"github.com/nats-io/nats.go"
+)
 
 func TestSubscriber(t *testing.T) {
-	Subscriber()
+	nc, err := nats.Connect("nats://localhost:4222")
+	if err != nil {
+		log.Fatalln(err)
+	}
+	Subscriber(nc)
 }
